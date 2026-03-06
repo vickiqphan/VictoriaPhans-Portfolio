@@ -1,7 +1,8 @@
 import { motion, useScroll, useTransform } from 'motion/react';
 import { ArrowRight } from 'lucide-react';
-import { ReactNode, useEffect, useRef, useState } from 'react';
+import React, { ReactNode, useEffect, useRef, useState } from 'react';
 import { client } from './lib/sanityClient';
+import PasswordPage from './PasswordPage';
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -66,7 +67,7 @@ const DEFAULT_CASE_STUDIES: CaseStudy[] = [
   },
   {
     _id: 'pbc-1',
-    title: 'Redesigning SMB Benefits for solopreneurs, contractors, and micro-businesses',
+    title: 'SMB Benefits: Insurance for Solopreneurs and Contractors',
     company: 'Pacific Blue Cross',
     dates: '2019 — 2023',
     summary: 'Small businesses often get overlooked in insurance plan design. Our SMB benefits portfolio was misaligned, with high churn and low adoption.',
@@ -93,6 +94,7 @@ const DEFAULT_CASE_STUDIES: CaseStudy[] = [
 
 // ─── Components ───────────────────────────────────────────────────────────────
 
+
 function FadeIn({ children, delay = 0 }: { children: ReactNode; delay?: number }) {
   return (
     <motion.div
@@ -113,9 +115,9 @@ export default function App() {
   const opacity = useTransform(scrollYProgress, [0, 0.2], [1, 0]);
   const y = useTransform(scrollYProgress, [0, 0.2], [0, 50]);
 
+  const [unlocked, setUnlocked] = useState(false);
   const [navVisible, setNavVisible] = useState(true);
   const lastScrollY = useRef(0);
-
   const [settings, setSettings] = useState<Required<SiteSettings>>(DEFAULT_SETTINGS);
   const [caseStudies, setCaseStudies] = useState<CaseStudy[]>(DEFAULT_CASE_STUDIES);
 
@@ -146,6 +148,10 @@ export default function App() {
   }, []);
 
   const previewCards = caseStudies.slice(0, 3);
+
+  if (!unlocked) {
+    return <PasswordPage onUnlock={() => setUnlocked(true)} />;
+  }
 
   return (
     <div className="min-h-screen bg-bg-warm text-ink selection:bg-accent/20">
